@@ -1,11 +1,11 @@
   applications:
-  - name: dealerreiew
+  - name: b100n-bestcars
     routes:
-      - route: dennislamcv.mybluemix.net
+      - route: b100n-bc.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
-  - name: dealerreiew-nginx
+  - name: b100n-bestcars-nginx
     routes:
-      - route: dennislamcv.mybluemix.net/static
+      - route: b100n-bc.mybluemix.net/static
     memory: 128M
     buildpack: staticfile_buildpack

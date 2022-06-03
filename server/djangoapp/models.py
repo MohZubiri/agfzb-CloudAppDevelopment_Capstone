@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
+from django.conf import settings
+import uuid
 
 
 # Create your models here.
@@ -10,13 +12,13 @@ from django.utils.timezone import now
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    name = models.CharField(max_length=50, primary_key=True)
-    desc = models.CharField(max_length=200)
+#    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=False, max_length=30, default='car make')
+    description = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.name
-
-
+        return "Name: " + self.name + "," + \
+               "Description: " + self.description
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
 # - Many-To-One relationship to Car Make model (One Car Make has many Car Models, using ForeignKey field)
@@ -26,24 +28,41 @@ class CarMake(models.Model):
 # - Year (DateField)
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
-
 class CarModel(models.Model):
-    name = models.CharField(max_length=50, primary_key=True)
-    id = models.CharField(max_length=2)
-    type = models.CharField(max_length=10)
-    year = models.DateField(null=True)
-    carmakes = models.ManyToManyField(CarMake)
+    SEDAN = 'sedan'
+    SUV = 'SUV'
+    WAGON = 'Wagon'
+    CAR_TYPES = [
+        (SEDAN, 'sedan'),
+        (SUV, 'SUV'),
+        (WAGON, 'WAGON')
+    ]
+#    id = models.AutoField(primary_key=True)
+    make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    name = models.CharField(null=False, max_length=30, default='car model')
+    dealer_id = models.IntegerField(default=50)
+    car_type = models.CharField(max_length=5, choices=CAR_TYPES, default=SEDAN)
+    year = models.DateField(default=now)
 
     def __str__(self):
-        return self.name
-
-
+        return "Name: " + self.name + "," + \
+               "Dealer ID: " + str(self.dealer_id) + "," + \
+               "Type: " + self.car_type + "," + \
+               "Year: " + str(self.year)
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
-
 class CarDealer:
 
-    def __init__(self, address, city, full_name, id, lat, long, short_name, st, zip):
+    def __init__(self, 
+                 address, 
+                 city, 
+                 full_name, 
+                 id, 
+                 lat, 
+                 long, 
+                 short_name, 
+                 st, 
+                 zip):
         # Dealer address
         self.address = address
         # Dealer city
@@ -66,33 +85,34 @@ class CarDealer:
     def __str__(self):
         return "Dealer name: " + self.full_name
 
-
-
 # <HINT> Create a plain Python class `DealerReview` to hold review data
-
 class DealerReview:
 
-    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, car_year, sentiment, id):
+    def __init__(self, 
+                 dealership, 
+                 name, 
+                 purchase, 
+                 review):
         # Dealership
         self.dealership = dealership
-        # Dealer name
+        # Name
         self.name = name
-        # Dealer purchase
+        # Purchase
         self.purchase = purchase
-        # Dealer review
+        # Review
         self.review = review
-        # purchase_date
-        self.purchase_date = purchase_date
-        # car_make
-        self.car_make = car_make
-        # car_model
-        self.car_model = car_model
-        # car_year
-        self.car_year = car_year
-        # sentiment
-        self.sentiment = sentiment
-        # id
-        self.id = id
+        # Purchase Date
+        self.purchase_date = '99/99/9999'
+        # Car Make
+        self.car_make = 'N/A'
+        # Car Model
+        self.car_model = 'N/A'
+        # Car Year
+        self.car_year = 9999
+        # Sentiment
+        self.sentiment = ''
+        # ID
+        self.id = 0      
 
     def __str__(self):
-        return "Dealer name: " + self.full_name
+        return "Review: " + self.review 
